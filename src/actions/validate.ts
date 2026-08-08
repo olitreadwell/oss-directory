@@ -190,8 +190,12 @@ export async function validateLogos(args: ValidateLogosArgs) {
   const errors: string[] = [];
 
   for (const file of logoFiles) {
-    const ext = path.extname(file).toLowerCase();
-    const slug = path.basename(file, ext);
+    const rawExt = path.extname(file);
+    const ext = rawExt.toLowerCase();
+    // Strip the real extension. `path.basename` matches the suffix
+    // case-sensitively, so passing the lowercased `ext` would not strip an
+    // uppercase extension (e.g. "Foo.PNG"), leaving the slug wrong.
+    const slug = path.basename(file, rawExt);
     const parentDir = path.basename(path.dirname(file));
     const expectedParent = slug.charAt(0).toLowerCase();
 
